@@ -16,6 +16,8 @@ Ignore rules do not remove a secret that was committed earlier. If one is expose
 
 Offline demonstrations and automated checks do not access accounts. Network-enabled research commands require an explicit opt-in and do not implement production order submission. The optional `marvel_testnet` adapter supports a fixed virtual-asset host and needs an additional explicit opt-in for orders.
 
+The separate `marvel_ops` connector includes fixed-host production Spot code. New live entries require explicit order acknowledgement, separate private credentials, a durable risk-checked intent, current source/policy bindings, qualifying historical and forward evidence, actual Testnet settlements and an expiring operator review. A review flag cannot bypass missing evidence. Recovery cannot sell unconfirmed or unrelated inventory. Production operations are never invoked by the offline quick start or CI. See [the operational guide](docs/OPERATIONS.md).
+
 Some research modules support optional authenticated read-only metadata or non-accepting conversion-quote observations. They remain independent of the offline quick start and are not run by CI. The quote endpoint's provider permission may be broader than the client's behavior. No real credentials or account observations are distributed.
 
 ## Report a problem

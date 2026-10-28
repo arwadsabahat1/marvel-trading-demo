@@ -4,7 +4,29 @@
 
 An educational Python project for studying trading-system engineering with a $50 simulated allocation. The default demo runs offline with invented data: no API key, paid service, package download or real-money deposit is needed.
 
-This software has no proven profitable strategy, production order executor, autonomous learning model or guaranteed loss ceiling. Synthetic results and Testnet fills demonstrate engineering behavior, not real trading returns.
+No profitable strategy, long-duration uptime record or guaranteed loss ceiling has been demonstrated. The operational layer includes a gated production Spot connector and bounded online strategy selection. Synthetic results and Testnet fills demonstrate engineering behavior, not real trading returns.
+
+## Operational implementation: version 0.6.0
+
+The new `marvel_ops` package connects historical validation, prospective paper observations, adaptive strategy selection, persistent order execution and service operation. The original research and isolated Testnet packages remain available.
+
+| Requested goal | Implemented code | Evidence status |
+| --- | --- | --- |
+| Profitable strategy after costs | Development screens, immutable final-holdout attempts, cost stresses, bootstrap and neighbor checks | No real candidate has qualified in this release |
+| Complete small-position exits | Fee-aware preflight, own-inventory reconciliation, stops, cancellation-race handling and retained residuals | Infeasible small orders are blocked; actual production exits remain unqualified |
+| Forward and Testnet evidence | Timely prospective paper broker and authenticated virtual settlement collector | Real elapsed time and authenticated observations still required |
+| Real-money execution and continuous operation | Fixed-host Spot adapter, durable intents, reconciliation, worker, health, backup and service templates | Live entry is gated; no real-money order or continuous deployment is claimed |
+| Automatic learning and adaptation | Regime-dependent rolling net-outcome scores and bounded strategy selection | Implemented and tested with invented outcomes; future profitability unknown |
+
+**This is an engineering milestone, not a claim that the financial goals have already been achieved.** Missing evidence is shown by a computed readiness report; the code cannot turn it into success by changing a README.
+
+```text
+python -m marvel_ops init
+python -m marvel_ops status
+python -m marvel_ops readiness
+```
+
+Use the Python 3.12 executable from the quick start below in place of `python`. Full architecture, live/Testnet controls, research release criteria and service instructions are in [the operational guide](docs/OPERATIONS.md).
 
 ## Quick start
 
@@ -85,6 +107,8 @@ BTCUSDT is the implemented research instrument. Gold, NASDAQ100 and US30 are fut
 |   |-- paper/                     # Synthetic execution and settlement
 |   `-- research/                  # Features, strategies, backtests and evidence
 |-- marvel_testnet/                # Isolated virtual exchange adapter
+|-- marvel_ops/                    # Integrated validation, learning, execution and service
+|-- deploy/                        # Generic paper-service and Windows-runner templates
 |-- scripts/                      # Demo runner, verification and source packaging
 |-- tests/                        # Core behavior and regression tests
 |-- tests_testnet/                # Mocked exchange and recovery tests
@@ -113,10 +137,15 @@ Important implementation entry points:
 | [Testnet workflow](marvel_testnet/workflow.py) | Preflight, one bounded virtual cycle, reconciliation and recovery |
 | [Testnet transport](marvel_testnet/transport.py) | Fixed-host requests, HMAC signing, route restrictions and sanitized receipts |
 | [Publication policy](scripts/public_files.py) | Reviewed file selection, private-pattern checks and source-only ZIP creation |
+| [Operational execution](marvel_ops/execution.py) | Risk-gated entry, actual fill accounting, venue protection and reduction-only close |
+| [Online learning](marvel_ops/learning.py) | Completed-outcome scoring, provenance separation and regime-dependent selection |
+| [Prospective paper](marvel_ops/forward.py) | Timely observations, persistent hypothetical broker and retained gaps |
+| [Qualification](marvel_ops/validation.py) | Frozen validation/holdout reports and evidence-derived live release gates |
+| [Service worker](marvel_ops/service.py) | Exclusive worker, heartbeat, backoff, graceful stop and persistent failure halts |
 
 ## Our approach
 
-1. **Start with reproducible behavior.** Fixed rules and invented fixtures make errors easier to isolate. No strategy parameters are fitted by this demo.
+1. **Start with reproducible behavior.** Fixed cards and invented fixtures make errors easier to isolate. The bounded selector updates outcome scores without changing card parameters or risk limits.
 2. **Check feasibility before evaluating a signal.** Entry fees, lot sizes, minimums and a complete exit must fit the small allocation.
 3. **Keep risk independent.** A strategy supplies proposals; another layer enforces budgets, stale-input checks and exposure limits.
 4. **Retain inconvenient outcomes.** Losses, rejected entries, zero-trade rules, uncertain orders and residual assets remain visible.
@@ -136,7 +165,7 @@ A signal can look attractive while its resulting tiny holding cannot be sold. A 
 | Cost-filtered breakout | 1-hour | Require breakout conditions and a fixed volatility hurdle; the hurdle is not a return forecast |
 | Range rebound | 1-hour | Recover from a lower band near relatively flat trend context |
 
-The default research demo screens three baseline variants. Separate comparison tools evaluate the three additional families. The observation-only forward protocol can record all six. No module automatically deploys a winner.
+The default research demo screens three baseline variants. Separate comparison tools evaluate the three additional families. The original observation-only protocol can record all six. The operational worker can select among fixed cards; live entries require independent historical, forward, Testnet and operator gates.
 
 ### Chronological evaluation
 
@@ -166,7 +195,7 @@ Two illustrative reserved date ranges use placeholder catalogue identities. No a
 
 The forward observer records new public signals under a frozen protocol. Late/missed hours stay visible; old observations are not replayed as timely decisions. It creates neither fills nor a performance record. Source or financial-setting changes can stop collection, and cloning this repository starts no background worker.
 
-Self-training, news/world-event analysis, challenger promotion and hosted supervision are future work. Their intended boundary is to propose candidates for independent evaluation while preserving the risk policy.
+The operational layer now adds persistent prospective paper execution, a bounded regime-dependent learner and worker supervision code. New-strategy generation and news/world-event analysis remain future work. The learner cannot loosen limits; production selection is restricted to qualified cards and actual completed-outcome provenance. Deployment and sustained uptime must still be observed.
 
 ## Risk controls and small-position costs
 
@@ -308,11 +337,11 @@ Preflight is GET-only. One manual virtual cycle needs passing checks and a separ
 
 See the [generic Testnet guide](docs/TESTNET.md) for the complete workflow. No real account identifiers, credential values, personal environment settings or production account setup are supplied.
 
-Some core research modules support optional authenticated read-only metadata or non-accepting conversion quotes. They are separate from the quick start and CI. There is no production order submission or actual conversion acceptance.
+Some core research modules support optional authenticated read-only metadata or non-accepting conversion quotes. They are separate from the quick start and CI. The original core does not submit production orders or accept conversions; the new `marvel_ops` production connector has separate explicit credentials, order acknowledgement and evidence gates. Offline examples and tests never invoke a funded account.
 
 ## Verification and CI
 
-The verified demo baseline ran **474 tests and 27 command checks** in a fresh source copy. Tests establish software behavior, not investment performance.
+The earlier demo baseline ran **474 tests and 27 command checks**. Operational tests and command checks are included in the current runner; its generated local report records the actual current counts. Tests establish software behavior, not investment performance.
 
 ```text
 python scripts/check_publish.py
@@ -350,11 +379,11 @@ The source-only archive is `dist/marvel-trading-demo.zip`. Its contents come fro
 | Paper execution | Fills, cancellation, recovery and settlement | Implemented offline |
 | Research | Fixed strategies, stresses, metrics and reserved samples | Implemented; profitability unproven |
 | Virtual exchange | Separate Testnet preflight, cycle and recovery | Adapter implemented; provider outcomes need observation |
-| Supervised operations | Hosting, monitoring, alerts and prolonged recovery exercises | Future work |
-| Production execution | Qualified execution route and release authorization | No production executor included |
-| Bounded adaptation | Challenger proposals and independent promotion review | Future work |
+| Supervised operations | Worker, health, backoff, backup and service templates | Code implemented; deployment/uptime evidence pending |
+| Production execution | Fixed-host Spot execution and evidence-derived authorization | Code implemented; funded use remains unqualified |
+| Bounded adaptation | Regime-dependent completed-outcome scores and card selection | Code implemented; no profitable adaptation claim |
 
-No self-training strategy engine, news/world-event integration, automatic risk adjustment, hosted 24/7 service, guaranteed return or completed production release is provided. Margin, futures, shorting, martingale and averaging down are outside the implemented demo. Keeping cash can be the correct result when costs or evidence do not support a trade.
+No proven profitable learner, news/world-event integration, automatic risk adjustment, hosted 24/7 service, guaranteed return or financially qualified production release is provided. The code for bounded learning and supervised execution does not establish those outcomes. Margin, futures, shorting, martingale and averaging down are outside the implemented demo. Keeping cash can be the correct result when costs or evidence do not support a trade.
 
 Read the detailed [architecture](docs/ARCHITECTURE.md), [phase roadmap](docs/ROADMAP.md) and [Testnet guide](docs/TESTNET.md). Separately obtained market data remains subject to provider terms; no provider dataset is redistributed here.
 

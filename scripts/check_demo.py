@@ -2,18 +2,22 @@
 
 import json
 import re
+from pathlib import Path
+from hashlib import sha256
 from demo_workspace import isolated
+from public_files import ROOT, public_paths
 
 SUITE = '''import unittest
 loader = unittest.TestLoader()
 suite = unittest.TestSuite(loader.discover(folder, top_level_dir=".")
-    for folder in ("tests", "tests_testnet", "tests_public"))
+    for folder in ("tests", "tests_testnet", "tests_public", "tests_ops"))
 result = unittest.TextTestRunner(verbosity=1).run(suite)
 raise SystemExit(0 if result.wasSuccessful() else 1)
 '''
 
 
 def main():
+    before = {name: sha256(path.read_bytes()).hexdigest() for name, path in public_paths()}
     with isolated() as (checkout, run):
         suite = run(["-c", SUITE])
         tests = int(re.search(r"Ran (\d+) tests", suite.stderr)[1])
@@ -55,12 +59,34 @@ def main():
             raise RuntimeError("Credential-free preflight was not rejected")
         cli("marvel_testnet", "cycle", "--allow-network", "--acknowledge-virtual-orders", expected=2)
         cli("marvel_testnet", "init", "--live", expected=2)
+        cli("marvel_ops", "status", expected=2)
+        cli("marvel_ops", "init")
+        cli("marvel_ops", "init")
+        cli("marvel_ops", "status")
+        if cli("marvel_ops", "readiness")["operations"]["live_entries_allowed"]:
+            raise RuntimeError("Missing operational evidence allowed live entries")
+        cli("marvel_ops", "health")
+        cli("marvel_ops", "backup")
+        cli("marvel_ops", "validate", "--dataset", research["dataset_id"])
+        cli("marvel_ops", "finalize-validation", "--development-record", "a" * 64, expected=2)
+        cli("marvel_ops", "worker", expected=2)
+        cli("marvel_ops", "--mode", "live", "init")
+        cli("marvel_ops", "--mode", "live", "readiness")
+        cli("marvel_ops", "--mode", "live", "enter", "--stop-price", "78400", "--strategy", "btc-breakout-1h-v1",
+            "--allow-network", "--process-credentials", "--acknowledge-orders", expected=2)
         if cli("marvel", "status")["account"] != first["account"]:
             raise RuntimeError("Disposable demos changed the simulated main account")
         run(["scripts/run_demo.py"])
-    print(json.dumps({"status": "passed", "tests": tests, "command_checks": checks,
+    after = {name: sha256(path.read_bytes()).hexdigest() for name, path in public_paths()}
+    if before != after:
+        raise RuntimeError("Source or documentation changed during verification; rerun the affected checks")
+    record = {"status": "passed", "tests": tests, "command_checks": checks,
                       "fresh_source_copy": True, "network_connections_allowed": False,
-                      "provider_credentials_used": False, "production_orders": 0}, indent=2))
+                      "provider_credentials_used": False, "production_orders": 0,
+                      "public_sha256": after}
+    (ROOT / "reports").mkdir(exist_ok=True)
+    (ROOT / "reports/demo-check-results.json").write_text(json.dumps(record, indent=2) + "\n", encoding="utf-8")
+    print(json.dumps({k: v for k, v in record.items() if k != "public_sha256"}, indent=2))
 
 
 if __name__ == "__main__":

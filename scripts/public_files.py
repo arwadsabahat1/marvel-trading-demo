@@ -14,8 +14,8 @@ TOP_LEVEL = {"README.md", "SECURITY.md", "pyproject.toml", "requirements.txt",
 EXACT_PATHS = {"config/paper.json", "config/btc-paper-risk.json",
                "tests/fixtures/schema-v1.sql", "tests/fixtures/btc-synthetic-ms.json",
                "docs/ARCHITECTURE.md", "docs/ROADMAP.md", "docs/TESTNET.md",
-               "ci/offline-checks.yml"}
-CODE_FOLDERS = {"marvel", "marvel_testnet", "tests", "tests_testnet", "tests_public"}
+               "ci/offline-checks.yml", "docs/OPERATIONS.md", "deploy/marvel-paper.service", "deploy/run-paper.ps1"}
+CODE_FOLDERS = {"marvel", "marvel_testnet", "marvel_ops", "tests", "tests_testnet", "tests_public", "tests_ops"}
 SCRIPT_NAMES = {"public_files.py", "check_publish.py", "package_demo.py",
                 "demo_workspace.py", "check_demo.py", "run_demo.py"}
 PATTERNS = {

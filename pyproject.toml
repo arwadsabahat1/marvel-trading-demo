@@ -1,13 +1,13 @@
 [project]
 name = "marvel-trading-demo"
-version = "0.5.10"
+version = "0.6.0"
 description = "An educational Bitcoin research, risk-control and paper-trading demo"
 readme = "README.md"
 requires-python = ">=3.12,<3.13"
 dependencies = []
 
 [tool.marvel]
-execution = "offline synthetic paper; optional isolated virtual-asset Spot Testnet"
+execution = "offline paper, prospective paper, Testnet and evidence-gated Spot operations"
 runtime = "CPython 3.12 standard library"
 test-command = "python scripts/check_demo.py"
 
