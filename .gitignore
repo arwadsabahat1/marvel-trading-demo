@@ -1,0 +1,42 @@
+# Local interpreters and Python output
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.test-tmp/
+.pytest_cache/
+.coverage
+htmlcov/
+build/
+dist/
+
+# Generated state, logs, research, captures and local verification output
+var/
+reports/
+*.sqlite*
+*.db
+*.db-*
+*.log
+*.jsonl
+*.zip
+
+# Credentials, local settings and editor state
+.env
+.env.*
+*.env
+*.pem
+*.key
+*.p12
+*.pfx
+credentials*
+secrets*
+account-*.json
+*.local.*
+.vscode/
+.idea/
+.codex/
+.agents/
+.aws/
+.DS_Store
+Thumbs.db

@@ -1,0 +1,15 @@
+* text=auto
+*.py text eol=lf
+*.md text eol=lf
+*.json text eol=lf
+*.yml text eol=lf
+*.toml text eol=lf
+*.sql text eol=lf
+
+# Defense in depth for archives created from a Git checkout.
+/var export-ignore
+/reports export-ignore
+/.venv export-ignore
+/.test-tmp export-ignore
+/dist export-ignore
+/.env* export-ignore
